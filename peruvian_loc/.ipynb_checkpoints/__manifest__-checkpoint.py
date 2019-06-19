@@ -19,7 +19,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base'],
+    'depends': ['base', 'account'],
 
     # always loaded
     'data': [
@@ -27,6 +27,7 @@
         'views/views.xml',        
         'views/loc_reports.xml',
         'views/registro_compras_views.xml',
+        'views/loc_views.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
