@@ -24,10 +24,10 @@
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
+        'views/loc_views.xml',
         'views/views.xml',        
         'views/loc_reports.xml',
-        'views/registro_compras_views.xml',
-        'views/loc_views.xml',
+        'views/registro_compras_views.xml',        
     ],
     # only loaded in demonstration mode
     'demo': [
