@@ -272,7 +272,7 @@ class RegistroCompras(models.Model):
                          left join res_currency_rate r 
                              on (he.currency_id = r.currency_id and he.x_fecha_factura = r.name)                         
                     where he.state not in ('draft')                      
-                      and substr(he.x_tipo_comprobante_pago_1,1,2) not in ('91','97','98')
+                      and substr(he.x_tipo_comprobante_pago,1,2) not in ('91','97','98')
 
              )
         ''')
