@@ -54,6 +54,7 @@
     </data>
 
     <!-- Texto PLE -->
+    <!--
     <report id="report_registro_ventas_ple"
             string="Texto PLE"
             model="registro.ventas"
@@ -61,6 +62,7 @@
             name="peruvian_loc.report_registro_ventas_ple_template"
             file="peruvian_loc.report_registro_ventas_ple_template"
             menu="True"/>
+    -->
     
     <report id="report_registro_ventas_ple_html"
             string="Texto PLE HTML"

@@ -64,10 +64,8 @@
                     </div>
                 </t>
             </t>    
-        </template>        
-        -->
+        </template>
         
-        <!-- Texto PLE -->
         <report id="report_registro_compras_ple" 
          string="Texto PLE"
          model="registro.compras"
@@ -81,7 +79,9 @@
                 <t t-esc="doc.texto"/>                            
             </t>
         </template>
+        -->
 
+        <!-- Texto PLE -->
         <report id="report_registro_compras_ple_html"
                 string="Texto PLE HTML"
                 model="registro.compras"

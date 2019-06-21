@@ -61,11 +61,14 @@
                     <attribute name="invisible"></attribute>
                     <attribute name="string">Número Factura</attribute>
                 </xpath>
+<<<<<<< Updated upstream
                 <xpath expr="//field[@name='move_name']" position="attributes">
                     <attribute name="attrs">{}</attribute>
                     <attribute name="invisible"></attribute>
                     <attribute name="string">Número Factura</attribute>
                 </xpath>
+=======
+>>>>>>> Stashed changes
                 <xpath expr="//field[@name='vendor_bill_purchase_id']" position="after">
                     <field name="x_cod_detraccion" string="Código Detracción"
 					    domain="[&quot;&amp;&quot;,[&quot;tax_group_id&quot;,&quot;=&quot;,&quot;Detracciones&quot;],[&quot;type_tax_use&quot;,&quot;=&quot;,&quot;purchase&quot;]]" view-group-names="User" view-group-ids="77"/>
