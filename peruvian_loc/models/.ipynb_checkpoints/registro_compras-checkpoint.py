@@ -51,11 +51,11 @@ class RegistroCompras(models.Model):
                            ai.date_invoice, 
                            ai.date_due, 
                            ai.x_tipo_comprobante_pago tipo_cp,                       
-                           case when position('-' in ai.number) = 0 then '' 
-                                else substr(ai.number, 1, position('-' in ai.number)-1) 
+                           case when position('-' in ai.move_name) = 0 then '' 
+                                else substr(ai.move_name, 1, position('-' in ai.move_name)-1) 
                            end serie,
-                           case when position('-' in ai.number) = 0 then ai.number 
-                                else substr(ai.number, position('-' in ai.number)+1) 
+                           case when position('-' in ai.move_name) = 0 then ai.move_name 
+                                else substr(ai.move_name, position('-' in ai.move_name)+1) 
                            end number,
                            p.x_tipo_persona tipo_persona,
                            p.x_tipo_documento_identidad tipo_doc,
@@ -100,12 +100,12 @@ class RegistroCompras(models.Model):
                                    to_char(ai.date_invoice,'DD/MM/YYYY'),
                                    to_char(ai.date_due,'DD/MM/YYYY'),
                                    ai.x_tipo_comprobante_pago,
-                                   case when position('-' in ai.number) = 0 then '' 
-                                        else substr(ai.number, 1, position('-' in ai.number)-1) 
+                                   case when position('-' in ai.move_name) = 0 then '' 
+                                        else substr(ai.move_name, 1, position('-' in ai.move_name)-1) 
                                    end,
                                    '',
-                                   case when position('-' in ai.number) = 0 then ai.number 
-                                        else substr(ai.number, position('-' in ai.number)+1) 
+                                   case when position('-' in ai.move_name) = 0 then ai.move_name 
+                                        else substr(ai.move_name, position('-' in ai.move_name)+1) 
                                    end,
                                    '',
                                    p.x_tipo_documento_identidad,
