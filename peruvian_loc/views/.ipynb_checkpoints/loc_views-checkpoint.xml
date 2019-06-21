@@ -56,7 +56,12 @@
             <field name="model">account.invoice</field>
             <field name="inherit_id" ref="account.invoice_supplier_form"/>
             <field name="arch" type="xml">
-			    <xpath expr="//field[@name='vendor_bill_purchase_id']" position="after">
+                <xpath expr="//field[@name='move_name']" position="attributes">
+                    <attribute name="attrs">{}</attribute>
+                    <attribute name="invisible"></attribute>
+                    <attribute name="string">Número Factura</attribute>
+                </xpath>
+                <xpath expr="//field[@name='vendor_bill_purchase_id']" position="after">
                     <field name="x_cod_detraccion" string="Código Detracción"
 					    domain="[&quot;&amp;&quot;,[&quot;tax_group_id&quot;,&quot;=&quot;,&quot;Detracciones&quot;],[&quot;type_tax_use&quot;,&quot;=&quot;,&quot;purchase&quot;]]" view-group-names="User" view-group-ids="77"/>
                     <field name="x_total_detraccion" string="Monto Detracción" readonly="1"/>
