@@ -50,15 +50,15 @@ class RegistroCompras(models.Model):
                     select ai.id, 
                            ai.date_invoice, 
                            ai.date_due, 
-                           substr(ai.x_tipo_comprobante_pago,1,2) tipo_cp,                       
+                           ai.x_tipo_comprobante_pago tipo_cp,                       
                            case when position('-' in ai.number) = 0 then '' 
                                 else substr(ai.number, 1, position('-' in ai.number)-1) 
                            end serie,
                            case when position('-' in ai.number) = 0 then ai.number 
                                 else substr(ai.number, position('-' in ai.number)+1) 
                            end number,
-                           substr(p.x_tipo_persona,1,2) tipo_persona,
-                           substr(p.x_tipo_documento_identidad,1,1) tipo_doc,
+                           p.x_tipo_persona tipo_persona,
+                           p.x_tipo_documento_identidad tipo_doc,
                            p.vat, 
                            ai.vendor_display_name, 
                            ai.amount_untaxed_signed amount_untaxed,
@@ -80,7 +80,7 @@ class RegistroCompras(models.Model):
                                   right(concat('00000000',aml.id), 8)       
                                  ) correlativo,
                            c.name currency_name,
-                           case when c.name = 'USD' then 1
+                           case when c.name = 'PEN' then 1
                                 else r.rate
                            end rate,
                            ai.move_id cuo,
@@ -99,7 +99,7 @@ class RegistroCompras(models.Model):
                                     ),
                                    to_char(ai.date_invoice,'DD/MM/YYYY'),
                                    to_char(ai.date_due,'DD/MM/YYYY'),
-                                   substr(ai.x_tipo_comprobante_pago,1,2),
+                                   ai.x_tipo_comprobante_pago,
                                    case when position('-' in ai.number) = 0 then '' 
                                         else substr(ai.number, 1, position('-' in ai.number)-1) 
                                    end,
@@ -108,7 +108,7 @@ class RegistroCompras(models.Model):
                                         else substr(ai.number, position('-' in ai.number)+1) 
                                    end,
                                    '',
-                                   substr(p.x_tipo_documento_identidad,1,1),
+                                   p.x_tipo_documento_identidad,
                                    p.vat,
                                    ai.vendor_display_name,
                                    ai.amount_untaxed_signed,
@@ -131,7 +131,7 @@ class RegistroCompras(models.Model):
                                    coalesce(to_char(ai.x_fecha_emision_detraccion,'DD/MM/YYYY'),''),
                                    coalesce(ai.x_nro_constancia_detraccion,''),
                                    '',
-                                   trim(both '0' from coalesce(substr(ai.x_clasificacion_bienes_y_servicios,1,2),'')),
+                                   trim(both '0' from coalesce(ai.x_clasificacion_bienes_y_servicios,'')),
                                    '',
                                    '',
                                    '',
@@ -159,21 +159,21 @@ class RegistroCompras(models.Model):
                              on (ai.currency_id = r.currency_id and ai.date_invoice = r.name)
                     where ai.type = 'in_invoice' 
                       and ai.state not in ('draft')                      
-                      and substr(ai.x_tipo_comprobante_pago,1,2) not in ('91','97','98')
+                      and ai.x_tipo_comprobante_pago not in ('91','97','98')
 
                     UNION ALL
                     select he.id,
                            he.x_fecha_factura, 
                            null, 
-                           substr(he.x_tipo_comprobante_pago,1,2) tipo_cp,                       
+                           he.x_tipo_comprobante_pago tipo_cp,                       
                            case when position('-' in he.reference) = 0 then '' 
                                 else substr(he.reference, 1, position('-' in he.reference)-1) 
                            end serie,
                            case when position('-' in he.reference) = 0 then he.reference 
                                 else substr(he.reference, position('-' in he.reference)+1) 
                            end number,
-                           substr(p.x_tipo_persona,1,2) tipo_persona,
-                           substr(p.x_tipo_documento_identidad,1,1) tipo_doc,
+                           p.x_tipo_persona tipo_persona,
+                           p.x_tipo_documento_identidad tipo_doc,
                            p.vat, 
                            p.name, 
                            0 amount_untaxed,
@@ -195,7 +195,7 @@ class RegistroCompras(models.Model):
                                   right(concat('00000000',aml.id), 8)       
                                  ) correlativo,
                            c.name currency_name,
-                           case when c.name = 'USD' then 1
+                           case when c.name = 'PEN' then 1
                                 else r.rate
                            end rate,
                            hes.account_move_id cuo,
@@ -213,7 +213,7 @@ class RegistroCompras(models.Model):
                                          ),
                                    to_char(he.x_fecha_factura,'DD/MM/YYYY'),
                                    '',
-                                   substr(he.x_tipo_comprobante_pago,1,2),
+                                   he.x_tipo_comprobante_pago,
                                    case when position('-' in he.reference) = 0 then '' 
                                         else substr(he.reference, 1, position('-' in he.reference)-1) 
                                    end,
@@ -222,7 +222,7 @@ class RegistroCompras(models.Model):
                                         else substr(he.reference, position('-' in he.reference)+1) 
                                    end,
                                    '',
-                                   substr(p.x_tipo_documento_identidad,1,1),
+                                   p.x_tipo_documento_identidad,
                                    p.vat,
                                    p.name,
                                    0,
@@ -245,7 +245,7 @@ class RegistroCompras(models.Model):
                                    coalesce(to_char(he.x_fecha_constancia_detraccion,'DD/MM/YYYY'),''),
                                    coalesce(he.x_nro_constancia_detraccion,''),
                                    '',
-                                   trim(both '0' from coalesce(substr(he.x_clasificacion_bienes_y_servicios,1,2),'')),
+                                   trim(both '0' from coalesce(he.x_clasificacion_bienes_y_servicios,'')),
                                    '',
                                    '',
                                    '',
@@ -272,7 +272,7 @@ class RegistroCompras(models.Model):
                          left join res_currency_rate r 
                              on (he.currency_id = r.currency_id and he.x_fecha_factura = r.name)                         
                     where he.state not in ('draft')                      
-                      and substr(he.x_tipo_comprobante_pago,1,2) not in ('91','97','98')
+                      and he.x_tipo_comprobante_pago not in ('91','97','98')
 
              )
         ''')

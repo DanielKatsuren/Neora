@@ -46,15 +46,15 @@ class RegistroVentas(models.Model):
                 select ai.id, 
                        ai.date_invoice, 
                        ai.date_due,                       
-                       substr(ai.x_tipo_comprobante_pago,1,2) tipo_cp,
+                       ai.x_tipo_comprobante_pago tipo_cp,
                        case when position('-' in ai.number) = 0 then '' 
                                 else substr(ai.number, 1, position('-' in ai.number)-1) 
                        end serie,
                        case when position('-' in ai.number) = 0 then ai.number 
                                 else substr(ai.number, position('-' in ai.number)+1) 
                        end number,
-                       substr(p.x_tipo_persona,1,2) tipo_persona,
-                       substr(p.x_tipo_documento_identidad,1,1) tipo_doc,
+                       p.x_tipo_persona tipo_persona,
+                       p.x_tipo_documento_identidad tipo_doc,
                        p.vat,
                        p.name customer_name,
                        ai.amount_untaxed_signed amount_untaxed,
@@ -75,7 +75,7 @@ class RegistroVentas(models.Model):
                               right(concat('00000000',aml.id), 8)       
                             ) correlativo,
                        c.name currency_name,
-                       case when c.name = 'USD' then 1
+                       case when c.name = 'PEN' then 1
                             else r.rate
                        end rate,
                        ai.move_id cuo,
@@ -94,7 +94,7 @@ class RegistroVentas(models.Model):
                                     ),
                                    to_char(ai.date_invoice,'DD/MM/YYYY'),
                                    to_char(ai.date_due,'DD/MM/YYYY'),
-                                   substr(ai.x_tipo_comprobante_pago,1,2),
+                                   ai.x_tipo_comprobante_pago,
                                    case when position('-' in ai.number) = 0 then '' 
                                         else substr(ai.number, 1, position('-' in ai.number)-1) 
                                    end,
@@ -102,7 +102,7 @@ class RegistroVentas(models.Model):
                                         else substr(ai.number, position('-' in ai.number)+1) 
                                    end,
                                    '',
-                                   substr(p.x_tipo_documento_identidad,1,1),
+                                   p.x_tipo_documento_identidad,
                                    p.vat,
                                    p.name,
                                    0,
