@@ -125,6 +125,19 @@
                 </xpath>
             </field>
         </record>
-
+        
+        <!-- purchase order -->
+        <record model="ir.ui.view" id="view_purchase_order_filter">
+            <field name="name">request.quotation.select.inherit.peruvian_loc</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.view_purchase_order_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//filter[@name='to_approve']" position="after">            
+                        <filter name="not_received" string="No recibidos" 
+                                domain="[('received_all', '=', '0')]"/>
+                </xpath>
+            </field>
+        </record>
+        
     </data>
 </odoo>
