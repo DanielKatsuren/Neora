@@ -171,3 +171,24 @@ class HrExpense(models.Model):
     x_proveedor = fields.Many2one('res.partner',string='Proveedor')
     x_nro_constancia_detraccion = fields.Char(size=30,string='Nro. Constancia Detracción')
     x_fecha_constancia_detraccion = fields.Date(string='Fecha Constancia Detracción')
+    
+class PurchaseOrder(models.Model):
+    _inherit = "purchase.order"
+
+    # Arguedas 
+    @api.depends('order_line.qty_received')
+    def _compute_received_all(self):        
+        for order in self:
+            l_tot_qty = 0
+            l_tot_received = 0
+            for line in order.order_line:
+                l_tot_qty += line.product_qty
+                l_tot_received += line.qty_received
+            if l_tot_qty > l_tot_received:
+                order.received_all = 0
+            else:
+                order.received_all = 1       
+
+    # Arguedas
+    received_all = fields.Integer(string='Total Recibido', compute='_compute_received_all', store=True)
+        
