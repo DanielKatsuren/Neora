@@ -139,7 +139,6 @@
                 </xpath>
             </field>
         </record>
-
         
         <!-- añadir filtros -->
         <record model="ir.ui.view" id="view_purchase_order_filter">
