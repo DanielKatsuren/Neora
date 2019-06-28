@@ -7,6 +7,7 @@ class ResPartner(models.Model):
 
     x_tipo_persona = fields.Selection([('01','01 - Persona Natural'),('02','02 - Persona Jurídica o Entidad'),
                                        ('03','03 - Sujeto No Domiciliado'),('04','04 - Adquiriente - Ticket')],string='Tipo Persona')
+    x_grupo_pago = fields.Selection([('01','AFP'),('02','EPS')],string='Grupo de Pago')
     x_tipo_documento_identidad = fields.Selection([('0','0 - Otros Tipos de Documentos'),('1','1 - Documento Nacional de Identidad'),
                                                    ('4','4 - Carnet de Extranjería'),('6','6 - Registro Único de Contribuyentes'),
                                                    ('7','7 - Pasaporte'),('A','A - Cédula Diplomática de Identidad')],
@@ -95,7 +96,13 @@ class AccountInvoice(models.Model):
 												('96','96 - Exceso de crédito fiscal por retiro de bienes'),
 												('97','97 - Nota de Crédito - No Domiciliado')],string='Tipo Comprobante Pago')
     x_cod_detraccion = fields.Many2one('account.tax',string='Detracción')
-    x_total_detraccion = fields.Monetary(string='Monto Detracción')
+
+    @api.depends('x_cod_detraccion','amount_total')
+    def _total_detraccion(self):
+        for x_inv in self:
+            x_inv.x_total_detraccion = -x_inv.x_cod_detraccion.amount * x_inv.amount_total / 100
+    
+    x_total_detraccion = fields.Monetary(string='Monto Detracción',compute=_total_detraccion)
     x_cod_dependencia_aduanera = fields.Char(size=30,string='Código Dependencia Aduanera')
     x_fecha_emision_detraccion = fields.Date(string='Fecha Emisión Detracción')
     x_nro_constancia_detraccion = fields.Char(size=30,string='Nro. Constancia Detracción')

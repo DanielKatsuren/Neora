@@ -13,6 +13,9 @@
                 <xpath expr="//field[@name='vat']" position="after">
                     <field name="x_tipo_persona" string="Tipo Persona"/>
                 </xpath>
+                <xpath expr="//field[@name='x_tipo_persona']" position="after">
+                    <field name="x_grupo_pago" string="Grupo de Pago"/>
+                </xpath>
 
                 <xpath expr="//form[1]/sheet[1]/notebook[1]" position="inside">
                     <page name="page_peruvian_loc" string="Localizaciones Peruanas">
@@ -50,7 +53,7 @@
             </field>
         </record>
 
-        <!-- invoice -->
+        <!-- Supplier Invoice -->        
         <record model="ir.ui.view" id="invoice_supplier_form">
             <field name="name">account.invoice.supplier.form.inherit.peruvian_loc</field>
             <field name="model">account.invoice</field>
@@ -71,6 +74,8 @@
                     <attribute name="invisible">1</attribute>
                 </xpath>
 
+       
+                
                 <xpath expr="//field[@name='vendor_bill_purchase_id']" position="after">
                     <field name="x_cod_detraccion" string="Código Detracción"
 					    domain="[&quot;&amp;&quot;,[&quot;tax_group_id&quot;,&quot;=&quot;,&quot;Detracciones&quot;],[&quot;type_tax_use&quot;,&quot;=&quot;,&quot;purchase&quot;]]" view-group-names="User" view-group-ids="77"/>
@@ -94,6 +99,17 @@
                             </group>
                         </group>
                     </page>
+                </xpath>
+            </field>
+        </record>
+        
+        <record model="ir.ui.view" id="invoice_form">
+            <field name="name">account.invoice.form.inherit.peruvian_loc</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='payment_term_id']" position="after">
+                    <field name="x_tipo_comprobante_pago" string="Tipo Comprobante Pago"/>
                 </xpath>
             </field>
         </record>
@@ -126,6 +142,7 @@
             </field>
         </record>
         
+        
         <!-- purchase order -->
         
         <!-- añadir campos -->
@@ -139,7 +156,6 @@
                 </xpath>
             </field>
         </record>
-
         
         <!-- añadir filtros -->
         <record model="ir.ui.view" id="view_purchase_order_filter">
@@ -148,13 +164,38 @@
             <field name="inherit_id" ref="purchase.view_purchase_order_filter"/>
             <field name="arch" type="xml">
                 <xpath expr="//filter[@name='to_approve']" position="after">            
-                        <filter name="not_received" string="No recibidos" 
+                        <filter name="not_received" string="Pedidos no recibidos" 
                                 domain="[('received_all', '=', '0')]"/>
                 </xpath>
             </field>
         </record>
         
+        <!-- sale order -->
+        <record model="ir.ui.view" id="view_order_tree">
+            <field name="name">sale.order.tree.inherit.peruvian_loc</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="after"> 
+                    <field name="client_order_ref"/>
+                </xpath>
+                <xpath expr="//field[@name='user_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
         
+        <!-- account payment -->
+        <record model="ir.ui.view" id="view_account_payment_form">
+            <field name="name">account.view.account.payment.form.inherit.peruvian_loc</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="attributes"> 
+                    <attribute name="string">Razón Social</attribute>
+                </xpath>
+            </field>
+        </record>        
         
     </data>
 </odoo>
