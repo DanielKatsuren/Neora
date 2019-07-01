@@ -7,7 +7,12 @@ class ResPartner(models.Model):
 
     x_tipo_persona = fields.Selection([('01','01 - Persona Natural'),('02','02 - Persona Jurídica o Entidad'),
                                        ('03','03 - Sujeto No Domiciliado'),('04','04 - Adquiriente - Ticket')],string='Tipo Persona')
-    x_grupo_pago = fields.Selection([('01','AFP'),('02','EPS')],string='Grupo de Pago')
+    x_grupo_pago = fields.Selection([('01','Proveedor Operaciones'),
+                                     ('02','Proveedor Servicios'),
+                                     ('03','Gastos Básicos'),
+                                     ('04','EPS'),
+                                     ('04','Oracle')
+                                    ],string='Grupo de Pago')
     x_tipo_documento_identidad = fields.Selection([('0','0 - Otros Tipos de Documentos'),('1','1 - Documento Nacional de Identidad'),
                                                    ('4','4 - Carnet de Extranjería'),('6','6 - Registro Único de Contribuyentes'),
                                                    ('7','7 - Pasaporte'),('A','A - Cédula Diplomática de Identidad')],
@@ -100,9 +105,10 @@ class AccountInvoice(models.Model):
     @api.depends('x_cod_detraccion','amount_total')
     def _total_detraccion(self):
         for x_inv in self:
-            x_inv.x_total_detraccion = -x_inv.x_cod_detraccion.amount * x_inv.amount_total / 100
+            x_inv.x_total_detraccion = round(-x_inv.x_cod_detraccion.amount * x_inv.amount_total_company_signed / 100)
     
-    x_total_detraccion = fields.Monetary(string='Monto Detracción',compute=_total_detraccion)
+    x_total_detraccion = fields.Monetary(string='Monto Detracción',compute=_total_detraccion)    
+    
     x_cod_dependencia_aduanera = fields.Char(size=30,string='Código Dependencia Aduanera')
     x_fecha_emision_detraccion = fields.Date(string='Fecha Emisión Detracción')
     x_nro_constancia_detraccion = fields.Char(size=30,string='Nro. Constancia Detracción')
@@ -113,7 +119,8 @@ class AccountInvoice(models.Model):
                                                            ('05','05 - Otros Gastos no Incluidos en el Numeral 4')],
                                                           string='Clasificación de Bienes y Servicios')
     x_nro_comprobante_doc_referencia = fields.Char(size=30,string='Nro. Comprobante Doc. Referencia')
-
+  
+    
 class HrExpense(models.Model):
     _inherit = "hr.expense"
 
@@ -181,8 +188,7 @@ class HrExpense(models.Model):
     
 class PurchaseOrder(models.Model):
     _inherit = "purchase.order"
-
-    # Arguedas 
+     
     @api.depends('order_line.qty_received')
     def _compute_received_all(self):        
         for order in self:
@@ -192,10 +198,25 @@ class PurchaseOrder(models.Model):
                 l_tot_qty += line.product_qty
                 l_tot_received += line.qty_received
             if l_tot_qty > l_tot_received:
-                order.received_all = 0
+                order.x_received_all = 0
             else:
-                order.received_all = 1       
+                order.x_received_all = 1       
 
-    # Arguedas
-    received_all = fields.Integer(string='Total Recibido', compute='_compute_received_all', store=True)
+    x_received_all = fields.Integer(string='Total Recibido', compute='_compute_received_all', store=True)
+    x_solicitante = fields.Many2one('hr.employee', string="Solicitante", required=True)    
+    
+class SaleOrder(models.Model):
+    _inherit = "sale.order"
+    
+    @api.depends('order_line.qty_invoiced', 'order_line.price_total')
+    def _total_facturado(self):        
+        for order in self:
+            order.x_total_facturado = 0            
+            for line in order.order_line:
+                if line.qty_invoiced > 0:
+                    order.x_total_facturado += line.price_total
+            order.x_total_saldo = order.amount_total - order.x_total_facturado
+    
+    x_total_facturado = fields.Monetary(string='Total Facturado',compute=_total_facturado)    
+    x_total_saldo = fields.Monetary(string='Saldo por Facturar',compute=_total_facturado)
         

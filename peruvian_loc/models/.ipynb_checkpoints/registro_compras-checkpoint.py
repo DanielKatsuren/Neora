@@ -159,7 +159,7 @@ class RegistroCompras(models.Model):
                              on (ai.currency_id = r.currency_id and ai.date_invoice = r.name)
                     where ai.type = 'in_invoice' 
                       and ai.state not in ('draft')                      
-                      and ai.x_tipo_comprobante_pago not in ('91','97','98')
+                      and ai.x_tipo_comprobante_pago not in ('91','97','98','00')
 
                     UNION ALL
                     select he.id,
@@ -272,7 +272,7 @@ class RegistroCompras(models.Model):
                          left join res_currency_rate r 
                              on (he.currency_id = r.currency_id and he.x_fecha_factura = r.name)                         
                     where he.state not in ('draft')                      
-                      and he.x_tipo_comprobante_pago not in ('91','97','98')
+                      and he.x_tipo_comprobante_pago not in ('91','97','98','00')
 
              )
         ''')
