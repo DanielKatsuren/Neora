@@ -78,7 +78,7 @@
                 
                 <xpath expr="//field[@name='vendor_bill_purchase_id']" position="after">
                     <field name="x_cod_detraccion" string="Código Detracción"
-					    domain="[&quot;&amp;&quot;,[&quot;tax_group_id&quot;,&quot;=&quot;,&quot;Detracciones&quot;],[&quot;type_tax_use&quot;,&quot;=&quot;,&quot;purchase&quot;]]" view-group-names="User" view-group-ids="77"/>
+                           domain="['&amp;',('type_tax_use','=','purchase'),('tax_group_id','=','Detracciones')]" view-group-names="User" view-group-ids="77"/>
                     <field name="x_total_detraccion" string="Monto Detracción" readonly="1"/>
 				</xpath>
 				<xpath expr="//field[@name='partner_bank_id']" position="after">
@@ -211,7 +211,41 @@
                     <attribute name="string">Razón Social</attribute>
                 </xpath>
             </field>
-        </record>        
+        </record>
+        
+        <!-- account invoice -->
+        <record model="ir.ui.view" id="view_account_invoice_filter">
+            <field name="name">account.view.account.invoice.filter.inherit.peruvian_loc</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//filter[@name='late']" position="after">            
+                    <separator/>    
+                    <filter name="detr_not_paid_pen" string="Detracción sin pagar (PEN)" 
+                            domain="['&amp;','&amp;','&amp;',
+                                     ('x_cod_detraccion','!=',False),
+                                     ('state','=','open'),
+                                     ('payment_ids','=',False),
+                                     ('currency_id.name','=','PEN')]"/>
+                    <filter name="detr_not_paid_pen" string="Detracción sin pagar (USD)" 
+                            domain="['&amp;','&amp;','&amp;',
+                                     ('x_cod_detraccion','!=',False),
+                                     ('state','=','open'),
+                                     ('payment_ids','=',False),
+                                     ('currency_id.name','=','USD')]"/>
+                </xpath>
+            </field>
+        </record>
+
+        <act_window id="action_pagar_detraccion"
+            name="Pagar Detracción"
+            src_model="account.invoice"
+            res_model="pago.detraccion"
+            multi="True"
+            target="new" 
+            key2="client_action_multi" 
+            view_mode="form" 
+            view_type="form" />
         
     </data>
 </odoo>

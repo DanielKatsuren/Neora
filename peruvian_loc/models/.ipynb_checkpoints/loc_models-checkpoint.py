@@ -48,6 +48,10 @@ class ResPartner(models.Model):
 
 class AccountInvoice(models.Model):
     _inherit = "account.invoice"
+    
+    move_name = fields.Char(string='Journal Entry Name', readonly=True,
+                            default=False, copy=False, states={'draft': [('readonly', False)]},
+                            help="Technical field holding the number given to the invoice, automatically set when the invoice is validated then stored to set the same number again if the invoice is cancelled, set to draft and re-validated.")
 
     x_tipo_comprobante_pago = fields.Selection([('00','00 - Otros'),('01','01 - Factura'),('02','02 - Recibo por Honorarios'),
 	                                            ('03','03 - Boleta de Venta'),('04','04 - Liquidación de Compra'),
